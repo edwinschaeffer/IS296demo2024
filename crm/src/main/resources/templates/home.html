@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div>Hello from Spring Boot</div>
+	<table border="1">
+		<tr th:each="lead: ${leads}">
+			<td th:text="${lead.company}" /> 
+			<td th:text="${lead.id}" /> 
+			<td th:text="${lead.city}" />
+			<td th:text="${lead.area}" /> 
+			<td th:text="${lead.employeeCount}" />
+		</tr>
+	</table>
+</body>
+</html>
