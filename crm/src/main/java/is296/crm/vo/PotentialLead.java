@@ -6,7 +6,49 @@ public class PotentialLead {
 	private String city;
 	private String employeeCount;
 	private String area;
-	
+	private String ageOfBusiness;
+	private String industry;
+	private String street;
+	private String state;
+	private String zipCode;
+	private String website;
+
+	public String getAgeOfBusiness() {
+		return ageOfBusiness;
+	}
+	public void setAgeOfBusiness(String ageOfBusiness) {
+		this.ageOfBusiness = ageOfBusiness;
+	}
+	public String getIndustry() {
+		return industry;
+	}
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public void setStreet(String street) {
+		this.street = street;
+	}
+	public String getState() {
+		return state;
+	}
+	public void setState(String state) {
+		this.state = state;
+	}
+	public String getZipCode() {
+		return zipCode;
+	}
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+	public String getWebsite() {
+		return website;
+	}
+	public void setWebsite(String website) {
+		this.website = website;
+	}
 	public String getCompany() {
 		return company;
 	}
