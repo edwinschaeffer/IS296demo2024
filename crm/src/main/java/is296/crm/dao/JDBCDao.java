@@ -77,4 +77,8 @@ public class JDBCDao {
 		List<PotentialLead> plList = j.query(sql, new BeanPropertyRowMapper(PotentialLead.class));
 		return plList;
 	}
+	
+	public void updatePotentialLead(PotentialLead pl) {
+		plm.updatePotentialLead(pl);
+	}
 }

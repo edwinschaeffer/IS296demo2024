@@ -12,9 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import is296.crm.dao.JDBCDao;
 import is296.crm.vo.PotentialLead;
@@ -50,7 +56,7 @@ public class HomePageController {
 		return "home";
 	}
 	
-	@RequestMapping("/homeMyB")
+	@RequestMapping("/homeMyBatisAll")
 	public String getHomePageMyBatis(Model m) {
 		m.addAttribute("leads", jDAO.getListofAllPLsMyBatis());
 		return "home";
@@ -60,5 +66,20 @@ public class HomePageController {
 	public String getLeadByIdMyBatis(@PathVariable(value="plId") String id, Model model) {
 		model.addAttribute("lead", jDAO.getLeadByIdMyBatis(id));
 		return "submitLeadJquery";
+	}
+	@RequestMapping("/submitLead")
+	public String getLeadByIdMyBatis() {
+		return "submitLeadJquery";
+	}
+	
+	@PostMapping("/findLead") 
+	public @ResponseBody PotentialLead getLeadByIdMyBatisAjax(@RequestBody String pl, Model model) {
+		return jDAO.getLeadByIdMyBatis(pl);
+	}
+	
+	@PostMapping("/updateLead") 
+	public @ResponseBody String updateLead(@RequestBody PotentialLead pl) {
+		jDAO.updatePotentialLead(pl);
+		return "success";
 	}
 }
