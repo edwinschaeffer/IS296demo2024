@@ -24,16 +24,27 @@
 	
 	function changeWindow() {
 		const idOfButton = event.target.id;
-		const newPL = $("#changePL").val();
+		let newPL = $("#changePL").val();
 		if(idOfButton === "windowL") {
 			let url = window.location.href;
 			url = url.substring(0, url.indexOf("PL"));
 			window.location.href = url + newPL;		
-		} else if(idOfButton === "callAjax") {
+		} else { 
+			let method = "";
+			let url = "";
+			if(idOfButton === "callAjax") {
+				method = "POST";
+				url = "/findLead";
+			} else if(idOfButton === "callAjaxJPA") {
+				method = "GET";
+				url = "/findJPAById";
+				newPL = { plId : newPL };
+			}
+		
 			$.ajax({
-				method : "POST", 
+				method : method, 
 				contentType : "application/text",
-				url : "/findLead", 
+				url : url, 
 				data : newPL, 
 				success : function(result) {
 					$.toast ({
@@ -63,7 +74,7 @@
 		}
 	}
 	
-	function updateLead() {
+	function updateLead(x) {
 		let pl = {};
 		$("input").each(function( index ) {
 			  const id = $(this).attr("id"); 
@@ -89,6 +100,11 @@
 				});	
 				if(result) {
 					populateForm(result);
+				}
+				if(x) {
+					let url = window.location.href;
+					url = url.substring(0, url.indexOf("home"));
+					window.location.href = url + 'homeMyBatisAll';						
 				}
 			},
 			error : function(error) {
@@ -162,7 +178,9 @@
 		</tr>
 	</table>
 	<button id="windowL" onclick="changeWindow()">Find PL with window.location</button>
-	<button id="callAjax" onclick="changeWindow()">Find PL with Ajax</button>	
+	<button id="callAjax" onclick="changeWindow()">Find PL with Ajax</button>
+	<button id="callAjaxJPA" onclick="changeWindow()">Find PL with Ajax using JPA</button>	
 	<button id="updateLead" onclick="updateLead()">Update Lead</button>
+	<button id="updateLead" onclick="updateLead(1)">Update Lead and See Result</button>
 </body>
 </html>

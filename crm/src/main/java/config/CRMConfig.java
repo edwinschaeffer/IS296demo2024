@@ -10,13 +10,18 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 
 import is296.crm.controller.HomePageController;
 
 @SpringBootApplication
 @ComponentScan("is296.crm.dao")
+@EnableJpaRepositories("is296.crm.repository")
 @MapperScan("is296.crm.mapper")
 public class CRMConfig {
 	@Bean
@@ -41,5 +46,15 @@ public class CRMConfig {
 		sessionFactory.setTypeAliasesPackage("crm.vo");
 		sessionFactory.setDataSource(dataSrc());
 		return sessionFactory.getObject();		
+	}
+	
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource ds) {
+		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+		em.setDataSource(ds);
+		em.setPackagesToScan("is296.crm.vo");
+		JpaVendorAdapter va = new HibernateJpaVendorAdapter();
+		em.setJpaVendorAdapter(va);
+		return em;
 	}
 }

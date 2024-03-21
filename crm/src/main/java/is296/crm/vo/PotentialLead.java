@@ -1,15 +1,27 @@
 package is296.crm.vo;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "POTENTIAL_LEADS")
 public class PotentialLead {
 	private String company;
+	@Id
+	@Column(nullable = false, name = "ID")
 	private String id;
 	private String city;
+	@Column(nullable = true, name = "EMPLOYEE_COUNT")
 	private String employeeCount;
 	private String area;
+	@Column(nullable = true, name = "AGE_OF_BUSINESS")
 	private String ageOfBusiness;
 	private String industry;
 	private String street;
 	private String state;
+	@Column(nullable = true, name = "ZIP_CODE")
 	private String zipCode;
 	private String website;
 

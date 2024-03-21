@@ -4,6 +4,8 @@
 </head>
 <body>
 	<div>Hello from Spring Boot</div>
+	<div>Update the database and return cities as MA = MID-AMERICA and CI = CENTRAL ILLINOIS?</div>
+	<button onclick="window.location.href='/transformLocationJPA' ">Update</button>
 	<table border="1">
 		<tr th:each="lead: ${leads}">
 			<td th:text="${lead.company}" /> 

@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import is296.crm.mapper.PotentialLeadMapper;
+import is296.crm.repository.PotentialLeadRepository;
 import is296.crm.vo.PotentialLead;
 
 @Service
@@ -22,6 +23,45 @@ public class JDBCDao {
 	@Autowired
 	private PotentialLeadMapper plm;
 	
+	@Autowired
+	private PotentialLeadRepository plRepo;
+	
+	
+	public List<PotentialLead> getAllPLsJPA() {
+		return plRepo.findAll();
+	}
+	
+	public List<PotentialLead> getAllPLsJPATransform() {
+		List<PotentialLead> plListAll = plRepo.findAll();
+		for(PotentialLead pl : plListAll) {
+			switch(pl.getArea()) {
+				case "MID-AMERICA": 
+					pl.setArea("MA");
+				break;
+				case "CENTRAL ILLINOIS": 
+					pl.setArea("CI");
+				break;
+			}
+		}
+		PotentialLead plTestAddRecord = new PotentialLead();
+		plTestAddRecord.setId("ED-TEST");
+		plTestAddRecord.setArea("ILLINOIS");
+		plTestAddRecord.setCity("EDWARDSVILLE");
+		plListAll.add(plTestAddRecord);
+		plRepo.saveAll(plListAll);
+		return plRepo.findAll();
+	}
+
+	public List<PotentialLead> getMaxEmployeesJPA() {
+		return plRepo.getMaxEmployees();
+	}
+	public PotentialLead getPLByIdJPA(String plId) {
+		return plRepo.findByid(plId);
+	}
+	
+	public List<PotentialLead> getPLByCityJPA(String city) {
+		return plRepo.findByCity(city);
+	}
 	
 	public PotentialLead getLeadByIdMyBatis(String id) {
 		return plm.getLeadById(id);
