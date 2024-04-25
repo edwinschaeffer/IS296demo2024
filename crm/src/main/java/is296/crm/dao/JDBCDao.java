@@ -121,4 +121,10 @@ public class JDBCDao {
 	public void updatePotentialLead(PotentialLead pl) {
 		plm.updatePotentialLead(pl);
 	}
+	
+	public List<PotentialLead> insertLeadFromPostMan(PotentialLead pl) {
+		plRepo.save(pl);
+		System.out.println(pl.getId());
+		return plRepo.getSomeResults(pl.getId());
+	}
 }

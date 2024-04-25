@@ -1,11 +1,15 @@
 package is296.crm.controller;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.EncryptedDocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -18,13 +22,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import is296.crm.dao.JDBCDao;
+import is296.crm.service.CRMRestClient;
+import is296.crm.service.ExcelUtility;
 import is296.crm.vo.PotentialLead;
+import jakarta.annotation.security.RolesAllowed;
 
 @Controller
 public class HomePageController {
@@ -33,11 +41,22 @@ public class HomePageController {
 	@Autowired
 	private JDBCDao jDAO;
 	
+	@Autowired
+	private ExcelUtility xl;
+	
+	@Autowired
+	private CRMRestClient crmRest;
+	
 	public HomePageController(JdbcTemplate jdbcT) {
 		this.jdbcT = jdbcT;
 	}
 	
-	
+	@RequestMapping("/dbUpload")
+	public String postExcelFile(Model m, @RequestParam("file") MultipartFile file) throws EncryptedDocumentException, IOException, ParseException {
+		m.addAttribute("atList",xl.transformExceltoAuditTrail(file));
+		return "auditTrail";
+		
+	}
 
 	@RequestMapping("/")
 	public String getHomePage(Model m) {
@@ -46,6 +65,8 @@ public class HomePageController {
 	}
 	
 	@GetMapping("/home") 
+	// @RolesAllowed("ROLE_SCIENTISTS") -- jsr "old" annotation
+	@PreAuthorize("hasRole('ROLE_SCIENTISTS')")
 	public String getHomePageBeanPropertyRowMapper(Model m) {
 		PotentialLead pl = new PotentialLead();
 		pl.setArea("myhouse");
@@ -74,10 +95,10 @@ public class HomePageController {
 		return "home";
 	}
 	
-	@RequestMapping("/homeJPAAll")
+	@RequestMapping("/map")
 	public String getHomePageJPA(Model m) {
 		m.addAttribute("leads", jDAO.getAllPLsJPA());
-		return "home";
+		return "map";
 	}
 	@RequestMapping("/homeMyB/{plId}")
 	public String getLeadByIdMyBatis(@PathVariable(value="plId") String id, Model model) {
@@ -123,4 +144,14 @@ public class HomePageController {
 		jDAO.updatePotentialLead(pl);
 		return "success";
 	}
+	@PostMapping("/insertLead")
+	public @ResponseBody List<PotentialLead> insertLead(@RequestBody PotentialLead pl) {
+		System.out.println(pl.toString());
+		return jDAO.insertLeadFromPostMan(pl);
+	}
+	@GetMapping("/starwars")
+	public void getStarWarsAPI() {
+		System.out.println(crmRest.getStarWarsAPI());
+	}
+	
 }

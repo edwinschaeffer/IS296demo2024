@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<table border="1">
+		<tr th:each="at : ${atList}">
+			<td th:text="${at.date}" /> 
+			<td th:text="${at.user}" /> 
+			<td th:text="${at.action}" />
+			<td th:text="${at.section}" /> 
+		</tr>
+	</table>
+</body>
+</html>

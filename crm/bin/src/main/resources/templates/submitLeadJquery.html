@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js" integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.css" integrity="sha512-wJgJNTBBkLit7ymC6vvzM1EcSWeM9mmOu+1USHaRBbHkm6W9EgM0HY27+UtUaprntaYQJF75rc8gjxllKs5OIQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<script type="text/javascript" th:inline="javascript">
+		
+	$(document).ready(function () {
+		let lead = [[${lead}]];
+		console.log(lead);
+		if(lead) { 
+			populateForm(lead);			
+		} 
+	});
+	function populateForm(lead) {
+		for (const key of Object.keys(lead)) {
+			$("#" + key).val(lead[key]);
+			if(key == 'website') {
+				$("#" + key + "URL").html(lead[key]);
+			} 
+		}		
+	}
+	
+	function changeWindow() {
+		const idOfButton = event.target.id;
+		let newPL = $("#changePL").val();
+		if(idOfButton === "windowL") {
+			let url = window.location.href;
+			url = url.substring(0, url.indexOf("PL"));
+			window.location.href = url + newPL;		
+		} else { 
+			let method = "";
+			let url = "";
+			if(idOfButton === "callAjax") {
+				method = "POST";
+				url = "/findLead";
+			} else if(idOfButton === "callAjaxJPA") {
+				method = "GET";
+				url = "/findJPAById";
+				newPL = { plId : newPL };
+			}
+		
+			$.ajax({
+				method : method, 
+				contentType : "application/text",
+				url : url, 
+				data : newPL, 
+				success : function(result) {
+					$.toast ({
+						heading : "Success!", 
+						text: "Record was found!", 
+						icon : "success", 
+						loader : false,
+						position : "top-center"
+					});	
+					if(result) {
+						populateForm(result);
+					}
+				},
+				error : function(error) {
+					const status = error.responseJSON.status;
+					const errorMsg = error.responseJSON.error;
+					$.toast ({
+						heading : "Error", 
+						text: "The server responded with the following message: " + status + " - " + errorMsg, 
+						icon : "error", 
+						loader : false,
+						position : "top-center", 
+						hideAfter : false
+					});					
+				}
+			});
+		}
+	}
+	
+	function updateLead(x) {
+		let pl = {};
+		$("input").each(function( index ) {
+			  const id = $(this).attr("id"); 
+			  if(id !== "changePL") {
+				  pl[id] = $(this).val();
+				  // pl[id] on iteration = pl.id = "myID"
+			  }
+		});
+		console.log(pl);
+		
+		$.ajax({
+			method : "POST", 
+			contentType : "application/JSON",
+			url : "/updateLead", 
+			data : JSON.stringify(pl), 
+			success : function(result) {
+				$.toast ({
+					heading : "Success!", 
+					text: "Record was updated!", 
+					icon : "success", 
+					loader : false,
+					position : "top-center"
+				});	
+				if(result) {
+					populateForm(result);
+				}
+				if(x) {
+					let url = window.location.href;
+					url = url.substring(0, url.indexOf("home"));
+					window.location.href = url + 'homeMyBatisAll';						
+				}
+			},
+			error : function(error) {
+				const status = error.responseJSON.status;
+				const errorMsg = error.responseJSON.error;
+				$.toast ({
+					heading : "Error", 
+					text: "The server responded with the following message: " + status + " - " + errorMsg, 
+					icon : "error", 
+					loader : false,
+					position : "top-center", 
+					hideAfter : false
+				});					
+			}
+		});		
+	}
+	
+	
+	
+	</script>
+	
+</head>
+<body>
+	<div>Submit or Get a Lead from/to Server with window.location or Ajax:</div>
+	<input type="text" id="changePL" />
+	<table>
+		<tr>
+		   <td>Id: </td>
+		   <td><input type="text" id="id"></td>
+		</tr>
+		<tr>
+		   <td>Age Of Business: </td>
+		   <td><input type="text" id="ageOfBusiness"></td>
+		</tr>
+		<tr>
+		   <td>Employee Count: </td>
+		   <td><input type="text" id="employeeCount"></td>
+		</tr>
+		<tr>
+		   <td>City: </td>
+		   <td><input type="text" id="city"></td>
+		</tr>
+		<tr>
+		   <td>Company: </td>
+		   <td><input type="text" id="company"></td>
+		</tr>
+		<tr>
+		   <td>Industry: </td>
+		   <td><input type="text" id="industry"></td>
+		</tr>
+		<tr>
+		   <td>Area: </td>
+		   <td><input type="text" id="area"></td>
+		</tr>
+		<tr>
+		   <td>Street: </td>
+		   <td><input type="text" id="street"></td>
+		</tr>
+		<tr>
+		   <td>State: </td>
+		   <td><input type="text" id="state"></td>
+		</tr>
+		<tr>
+		   <td>Zip Code: </td>
+		   <td><input type="text" id="zipCode"></td>
+		</tr>
+		<tr>
+		   <td>Website: </td>
+		   <td><input type="text" id="website">
+		       <div id="websiteURL"></div></td>
+		</tr>
+	</table>
+	<button id="windowL" onclick="changeWindow()">Find PL with window.location</button>
+	<button id="callAjax" onclick="changeWindow()">Find PL with Ajax</button>
+	<button id="callAjaxJPA" onclick="changeWindow()">Find PL with Ajax using JPA</button>	
+	<button id="updateLead" onclick="updateLead()">Update Lead</button>
+	<button id="updateLead" onclick="updateLead(1)">Update Lead and See Result</button>
+</body>
+</html>

@@ -1,9 +1,3 @@
-CREATE TABLE AUDIT_TRAIL (
-	"DATE" TIMESTAMP(0), 
-	"USER" varchar(100),
-	"ACTION" varchar(100),
-	"SECTION" varchar(100)
-);
 CREATE TABLE POTENTIAL_LEADS(
   "ID" varchar(100),
   "AGE_OF_BUSINESS" varchar(100),

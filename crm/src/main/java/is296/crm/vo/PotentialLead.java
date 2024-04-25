@@ -1,5 +1,8 @@
 package is296.crm.vo;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,6 +22,8 @@ public class PotentialLead {
 	@Column(nullable = true, name = "AGE_OF_BUSINESS")
 	private String ageOfBusiness;
 	private String industry;
+	// -- JsonProperty -- Returns with the key as "STREET"
+	// @JsonProperty("STREET")
 	private String street;
 	private String state;
 	@Column(nullable = true, name = "ZIP_CODE")
